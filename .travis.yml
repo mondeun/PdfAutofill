@@ -2,5 +2,13 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 dist: trusty
+branches:
+  only:
+    - master
+    - develop
 script:
  - dotnet restore
+notifications:
+  email:
+    on_success: never
+    on_failure: always
