@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using iText.Kernel.Pdf;
 using NUnit.Framework;
 using PdfAutofill.Model;
 using PdfAutofill.Service;

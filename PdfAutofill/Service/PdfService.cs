@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using iText.IO.Source;
 using iText.Kernel.Pdf;
 using iText.Forms;
 using iText.Forms.Fields;
-using iText.Layout;
 using PdfAutofill.Model;
 
 namespace PdfAutofill.Service

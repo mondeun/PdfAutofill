@@ -17,9 +17,7 @@ namespace PdfAutofill.Controllers
                 var service = new PdfService();
                 service.InitDocument(url);
 
-                var keys = service.GetAcroFields().Select(x => x.Key).ToList();
-
-                return keys;
+                return service.GetAcroFields().Select(x => x.Key).ToList();
             }
 
             return null;
@@ -29,6 +27,7 @@ namespace PdfAutofill.Controllers
         public string Post([FromBody]PdfViewModel model)
         {
             var service = new PdfService();
+            service.InitDocument(model);
 
             var pdf = service.FillPdf(model);
             
