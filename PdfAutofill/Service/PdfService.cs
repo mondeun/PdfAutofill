@@ -13,34 +13,42 @@ namespace PdfAutofill.Service
 {
     public class PdfService
     {
-        public string FillPdf(PdfViewModel model)
+        private PdfDocument _pdfDocument;
+
+        public void InitDocument(string url)
         {
             byte[] bytes;
-            var base64 = string.Empty;            
 
             using (var client = new WebClient())
             {
-                bytes = client.DownloadData(new Uri(model.Url));
+                bytes = client.DownloadData(new Uri(url));
             }
 
             var memStream = new MemoryStream(bytes);
             var pdfReader = new PdfReader(memStream);
-            // var pdfWriter = new PdfWriter();
 
-            var pdfDoc = new PdfDocument(pdfReader);
+            _pdfDocument = new PdfDocument(pdfReader);
+        }
 
-            var fields = GetAcroFields(pdfDoc);
+        public void InitDocument(PdfViewModel model)
+        {
+            InitDocument(model.Url);
+        }
 
+        public string FillPdf(PdfViewModel model)
+        {
+            var base64 = string.Empty;            
             
+            var fields = GetAcroFields();
 
             return fields.ToString();
         }
 
-        public List<KeyValuePair<string, PdfFormField>> GetAcroFields(PdfDocument doc)
+        public List<KeyValuePair<string, PdfFormField>> GetAcroFields()
         {
             var fields = new List<KeyValuePair<string, PdfFormField>>();
 
-            foreach (var field in PdfAcroForm.GetAcroForm(doc, false).GetFormFields())
+            foreach (var field in PdfAcroForm.GetAcroForm(_pdfDocument, false).GetFormFields())
             {
                 fields.Add(field);
             }

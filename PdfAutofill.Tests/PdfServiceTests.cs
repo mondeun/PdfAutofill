@@ -15,7 +15,6 @@ namespace PdfAutofill.Tests
     {
         private PdfService _sut;
         private PdfViewModel _pdf;
-        private PdfDocument _pdfDocument;
 
         [SetUp]
         public void Setup()
@@ -28,24 +27,14 @@ namespace PdfAutofill.Tests
                 FieldsData = new List<string>()
             };
 
-            byte[] bytes;
-
-            using (var client = new WebClient())
-            {
-                bytes = client.DownloadData(new Uri(_pdf.Url));
-            }
-
-            var memStream = new MemoryStream(bytes);
-            var pdfReader = new PdfReader(memStream);
-
-            _pdfDocument = new PdfDocument(pdfReader);
+            _sut.InitDocument(_pdf.Url);
         }
 
         [Test]
         public void ReceivePdfWithForms_ReturnListOfFields()
         {
 
-            var result = _sut.GetAcroFields(_pdfDocument);
+            var result = _sut.GetAcroFields();
 
             foreach (var pair in result)
             {
