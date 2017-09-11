@@ -9,7 +9,7 @@ branches:
 script:
  - dotnet restore
  - dotnet build
- - dotnet test
+ - dotnet test PdfAutofill.Tests
 notifications:
   email:
     on_success: never
