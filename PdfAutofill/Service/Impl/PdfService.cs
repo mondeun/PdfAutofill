@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using iText.Kernel.Pdf;
 using iText.Forms;
@@ -48,12 +49,7 @@ namespace PdfAutofill.Service.Impl
 
         public List<KeyValuePair<string, PdfFormField>> GetAcroFields()
         {
-            var fields = new List<KeyValuePair<string, PdfFormField>>();
-
-            foreach (var field in PdfAcroForm.GetAcroForm(_pdfDocument, false).GetFormFields())
-            {
-                fields.Add(field);
-            }
+            var fields = PdfAcroForm.GetAcroForm(_pdfDocument, false)?.GetFormFields().ToList();
 
             Close();
             return fields;

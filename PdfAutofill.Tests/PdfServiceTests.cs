@@ -31,7 +31,6 @@ namespace PdfAutofill.Tests
         [Test]
         public void ReceivePdfWithForms_ReturnListOfFields()
         {
-
             var result = _sut.GetAcroFields();
 
             foreach (var pair in result)

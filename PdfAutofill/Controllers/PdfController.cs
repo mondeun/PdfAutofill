@@ -18,7 +18,7 @@ namespace PdfAutofill.Controllers
             {
                 _service.InitDocument(url);
 
-                return Ok(_service.GetAcroFields().Select(x => x.Key).ToList());
+                return Ok(_service.GetAcroFields()?.Select(x => x.Key).ToList());
             }
 
             ModelState.AddModelError("url", "Url is missing");
@@ -30,11 +30,11 @@ namespace PdfAutofill.Controllers
         {
             _service.InitDocument(model);
 
-            var pdf = _service.FillPdf(model);
+            var pdfBase64 = _service.FillPdf(model);
             
             // TODO Exception handling and validation
 
-            return Ok(pdf);
+            return Ok(pdfBase64);
         }
     }
 }
