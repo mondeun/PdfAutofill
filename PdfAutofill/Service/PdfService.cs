@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
 using iText.Kernel.Pdf;
 using PdfAutofill.Model;
 
@@ -9,10 +7,20 @@ namespace PdfAutofill.Service
 {
     public class PdfService
     {
-        public PdfDocument FillPdf(PdfViewModel model)
+        public string FillPdf(PdfViewModel model)
         {
-            // TODO
-            return null;
+            byte[] bytes = { };
+            var base64 = string.Empty;
+            var pdfDoc = new PdfDocument(new PdfReader(string.Empty), new PdfWriter(string.Empty));
+            
+
+            using (var client = new WebClient())
+            {
+                bytes = client.DownloadData(new Uri(model.Url));
+            }
+
+
+            return base64;
         }
     }
 }

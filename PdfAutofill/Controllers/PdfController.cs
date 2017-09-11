@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using iText.Forms;
-using iText.Kernel.Pdf;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PdfAutofill.Model;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PdfAutofill.Controllers
 {
     [Route("api/[controller]")]
     public class PdfController : Controller
     {
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody]PdfViewModel model)
+        public string Post([FromBody]PdfViewModel model)
         {
-            // TODO
+            var service = new Service.PdfService();
+
+            var pdf = service.FillPdf(model);
+            
+            // TODO Exception handling and validation
+
+            return pdf;
         }
     }
 }
