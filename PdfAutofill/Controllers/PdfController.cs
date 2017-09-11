@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using PdfAutofill.Model;
 using PdfAutofill.Service;
@@ -13,20 +12,21 @@ namespace PdfAutofill.Controllers
         private readonly IPdfService _service = new PdfService();
 
         [HttpGet]
-        public List<string> Get([FromHeader(Name = "url")]string url)
+        public IActionResult Get([FromHeader(Name = "url")]string url)
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
                 _service.InitDocument(url);
 
-                return _service.GetAcroFields().Select(x => x.Key).ToList();
+                return Ok(_service.GetAcroFields().Select(x => x.Key).ToList());
             }
 
-            return null;
+            ModelState.AddModelError("url", "Url is missing");
+            return BadRequest(ModelState);
         }
 
         [HttpPost]
-        public string Post([FromBody]PdfViewModel model)
+        public IActionResult Post([FromBody]PdfViewModel model)
         {
             _service.InitDocument(model);
 
@@ -34,7 +34,7 @@ namespace PdfAutofill.Controllers
             
             // TODO Exception handling and validation
 
-            return pdf;
+            return Ok(pdf);
         }
     }
 }
