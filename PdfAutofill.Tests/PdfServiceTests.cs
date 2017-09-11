@@ -22,7 +22,7 @@ namespace PdfAutofill.Tests
             _pdf = new PdfViewModel
             {
                 Url = "https://www.lantmateriet.se/globalassets/fastigheter/andra-agare/blanketter-och-information/blanketter/anmalan_fornyelse_av_inskrivning.pdf",
-                FieldsData = new List<string>()
+                FieldsData = new Dictionary<string, string>()
             };
 
             _sut.InitDocument(_pdf.Url);

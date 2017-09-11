@@ -6,6 +6,6 @@ namespace PdfAutofill.Model
     {
         public string Url { get; set; }
 
-        public List<string> FieldsData { get; set; }
+        public Dictionary<string, string> FieldsData { get; set; }
     }
 }
