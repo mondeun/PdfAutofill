@@ -4,13 +4,14 @@ using System.Linq;
 using NUnit.Framework;
 using PdfAutofill.Model;
 using PdfAutofill.Service;
+using PdfAutofill.Service.Impl;
 
 namespace PdfAutofill.Tests
 {
     [TestFixture]
     public class PdfServiceTests
     {
-        private PdfService _sut;
+        private IPdfService _sut;
         private PdfViewModel _pdf;
 
         [SetUp]

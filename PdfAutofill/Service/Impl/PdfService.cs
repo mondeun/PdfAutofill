@@ -7,11 +7,12 @@ using iText.Forms;
 using iText.Forms.Fields;
 using PdfAutofill.Model;
 
-namespace PdfAutofill.Service
+namespace PdfAutofill.Service.Impl
 {
-    public class PdfService
+    public class PdfService : IPdfService
     {
         private PdfDocument _pdfDocument;
+        private PdfReader _pdfReader;
 
         public void InitDocument(string url)
         {
@@ -23,9 +24,9 @@ namespace PdfAutofill.Service
             }
 
             var memStream = new MemoryStream(bytes);
-            var pdfReader = new PdfReader(memStream);
+            _pdfReader = new PdfReader(memStream);
 
-            _pdfDocument = new PdfDocument(pdfReader);
+            _pdfDocument = new PdfDocument(_pdfReader);
 
             memStream.Close();
         }
@@ -40,8 +41,8 @@ namespace PdfAutofill.Service
             var base64 = string.Empty;            
             
             var fields = GetAcroFields();
-            _pdfDocument.Close();
 
+            Close();
             return fields.ToString();
         }
 
@@ -53,8 +54,15 @@ namespace PdfAutofill.Service
             {
                 fields.Add(field);
             }
-            _pdfDocument.Close();
+
+            Close();
             return fields;
+        }
+
+        private void Close()
+        {
+            _pdfDocument.Close();
+            _pdfReader.Close();
         }
     }
 }
