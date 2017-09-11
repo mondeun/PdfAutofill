@@ -9,15 +9,16 @@ namespace PdfAutofill.Controllers
     [Route("api/[controller]")]
     public class PdfController : Controller
     {
+        private readonly PdfService _service = new PdfService();
+
         [HttpGet]
         public List<string> Get([FromHeader(Name = "url")]string url)
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
-                var service = new PdfService();
-                service.InitDocument(url);
+                _service.InitDocument(url);
 
-                return service.GetAcroFields().Select(x => x.Key).ToList();
+                return _service.GetAcroFields().Select(x => x.Key).ToList();
             }
 
             return null;
@@ -26,10 +27,9 @@ namespace PdfAutofill.Controllers
         [HttpPost]
         public string Post([FromBody]PdfViewModel model)
         {
-            var service = new PdfService();
-            service.InitDocument(model);
+            _service.InitDocument(model);
 
-            var pdf = service.FillPdf(model);
+            var pdf = _service.FillPdf(model);
             
             // TODO Exception handling and validation
 

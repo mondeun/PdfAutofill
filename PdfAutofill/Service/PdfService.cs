@@ -26,6 +26,8 @@ namespace PdfAutofill.Service
             var pdfReader = new PdfReader(memStream);
 
             _pdfDocument = new PdfDocument(pdfReader);
+
+            memStream.Close();
         }
 
         public void InitDocument(PdfViewModel model)
@@ -38,6 +40,7 @@ namespace PdfAutofill.Service
             var base64 = string.Empty;            
             
             var fields = GetAcroFields();
+            _pdfDocument.Close();
 
             return fields.ToString();
         }
@@ -50,7 +53,7 @@ namespace PdfAutofill.Service
             {
                 fields.Add(field);
             }
-
+            _pdfDocument.Close();
             return fields;
         }
     }
