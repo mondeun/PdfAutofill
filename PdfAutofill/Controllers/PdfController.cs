@@ -16,7 +16,7 @@ namespace PdfAutofill.Controllers
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
-                _service.InitDocument(url);
+                _service.InitDocument(url, false);
 
                 return Ok(_service.GetAcroFields()?.Select(x => x.Key).ToList());
             }
@@ -28,13 +28,13 @@ namespace PdfAutofill.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]PdfViewModel model)
         {
-            _service.InitDocument(model);
+            _service.InitDocument(model, true);
 
-            var pdfBase64 = _service.FillPdf(model);
-            
-            // TODO Exception handling and validation
+            var pdf = _service.FillPdf(model);
 
-            return Ok(pdfBase64);
+            Response.ContentType = "application/pdf";
+
+            return Ok(pdf.Item1);
         }
     }
 }

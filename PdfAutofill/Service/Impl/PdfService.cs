@@ -14,9 +14,14 @@ namespace PdfAutofill.Service.Impl
     {
         private PdfDocument _pdfDocument;
         private PdfReader _pdfReader;
+        private PdfWriter _pdfWriter;
+        private MemoryStream _memoryBuffer;
+        private bool _writeMode;
 
-        public void InitDocument(string url)
+        public void InitDocument(string url, bool writeMode)
         {
+            _writeMode = writeMode;
+
             byte[] bytes;
 
             using (var client = new WebClient())
@@ -24,34 +29,56 @@ namespace PdfAutofill.Service.Impl
                 bytes = client.DownloadData(new Uri(url));
             }
 
-            var memStream = new MemoryStream(bytes);
-            _pdfReader = new PdfReader(memStream);
+            using (var memStream = new MemoryStream(bytes))
+            {
+                _pdfReader = new PdfReader(memStream);
 
-            _pdfDocument = new PdfDocument(_pdfReader);
-
-            memStream.Close();
+                if (writeMode)
+                {
+                    _memoryBuffer = new MemoryStream();
+                    _pdfWriter = new PdfWriter(_memoryBuffer);
+                    _pdfDocument = new PdfDocument(_pdfReader, _pdfWriter);
+                }
+                else
+                    _pdfDocument = new PdfDocument(_pdfReader);
+            }
         }
 
-        public void InitDocument(PdfViewModel model)
+        public void InitDocument(PdfViewModel model, bool writeMode)
         {
-            InitDocument(model.Url);
+            InitDocument(model.Url, writeMode);
         }
 
-        public string FillPdf(PdfViewModel model)
+        public (string, int) FillPdf(PdfViewModel model)
         {
-            var base64 = string.Empty;            
-            
             var fields = GetAcroFields();
 
+            foreach (var element in model.FieldsData)
+            {
+                if (fields.ContainsKey(element.Key))
+                {
+                    fields[element.Key].SetValue(element.Value);
+                }
+            }
+
+            _memoryBuffer.Seek(0, 0);
+            var base64 = Convert.ToBase64String((_pdfWriter.GetOutputStream() as MemoryStream).ToArray());
+            var size = _memoryBuffer.ToArray().Length;
+
             Close();
-            return fields.ToString();
+            _memoryBuffer.Dispose();
+            _pdfWriter.Dispose();
+
+            return (base64, size);
         }
 
-        public List<KeyValuePair<string, PdfFormField>> GetAcroFields()
+        public IDictionary<string, PdfFormField> GetAcroFields()
         {
-            var fields = PdfAcroForm.GetAcroForm(_pdfDocument, false)?.GetFormFields().ToList();
+            var fields = PdfAcroForm.GetAcroForm(_pdfDocument, false)?.GetFormFields();
 
-            Close();
+            if (!_writeMode)
+                Close();
+
             return fields;
         }
 

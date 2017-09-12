@@ -6,9 +6,9 @@ namespace PdfAutofill.Service
 {
     public interface IPdfService
     {
-        void InitDocument(string url);
-        void InitDocument(PdfViewModel model);
-        string FillPdf(PdfViewModel model);
-        List<KeyValuePair<string, PdfFormField>> GetAcroFields();
+        void InitDocument(string url, bool writeMode);
+        void InitDocument(PdfViewModel model, bool writeMode);
+        (string, int) FillPdf(PdfViewModel model);
+        IDictionary<string, PdfFormField> GetAcroFields();
     }
 }
