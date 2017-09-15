@@ -32,14 +32,14 @@ namespace PdfAutofill.Tests
             _sut.InitDocument(_pdf.Url, false);
             var result = _sut.GetAcroFields();
 
-            foreach (var pair in result)
+            foreach (var pair in result.Fields)
             {
                 Console.WriteLine(pair.Key);
             }
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(23, result.Count);
-            Assert.True(result.Count(x => x.Key == "Adress") == 1);
+            Assert.AreEqual(23, result.Fields.Count);
+            Assert.True(result.Fields.Count(x => x.Key == "Adress") == 1);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace PdfAutofill.Tests
 
             var result = _sut.GetAcroFields();
 
-            Assert.IsNull(result);
+            Assert.IsEmpty(result.Fields);
         }
     }
 }

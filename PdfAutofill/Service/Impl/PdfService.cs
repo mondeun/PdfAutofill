@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using iText.Kernel.Pdf;
-using iText.Forms;
-using iText.Forms.Fields;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using PdfAutofill.Model;
 
 namespace PdfAutofill.Service.Impl
 {
     public class PdfService : IPdfService
     {
-        private PdfDocument _pdfDocument;
+        private Document _pdfDocument;
         private PdfReader _pdfReader;
         private PdfWriter _pdfWriter;
         private MemoryStream _memoryBuffer;
@@ -31,16 +29,14 @@ namespace PdfAutofill.Service.Impl
 
             using (var memStream = new MemoryStream(bytes))
             {
+                _pdfDocument = new Document();
                 _pdfReader = new PdfReader(memStream);
 
-                if (writeMode)
-                {
-                    _memoryBuffer = new MemoryStream();
-                    _pdfWriter = new PdfWriter(_memoryBuffer);
-                    _pdfDocument = new PdfDocument(_pdfReader, _pdfWriter);
-                }
-                else
-                    _pdfDocument = new PdfDocument(_pdfReader);
+                if (!writeMode)
+                    return;
+
+                _memoryBuffer = new MemoryStream();
+                _pdfWriter = PdfWriter.GetInstance(_pdfDocument, memStream);
             }
         }
 
@@ -49,32 +45,35 @@ namespace PdfAutofill.Service.Impl
             InitDocument(model.Url, writeMode);
         }
 
-        public (string, int) FillPdf(PdfViewModel model)
+        public string FillPdf(PdfViewModel model)
         {
-            var fields = GetAcroFields();
+            var stamper = new PdfStamper(_pdfReader, _memoryBuffer);
+            var form = stamper.AcroFields;
 
             foreach (var element in model.FieldsData)
             {
-                if (fields.ContainsKey(element.Key))
+                if (form.Fields.ContainsKey(element.Key))
                 {
-                    fields[element.Key].SetValue(element.Value);
+                    form.SetField(element.Key, element.Value);
                 }
             }
 
             _memoryBuffer.Seek(0, 0);
-            var base64 = Convert.ToBase64String((_pdfWriter.GetOutputStream() as MemoryStream).ToArray());
-            var size = _memoryBuffer.ToArray().Length;
 
-            Close();
-            _memoryBuffer.Dispose();
+            var pdfBytes = _memoryBuffer.ToArray();
+
+            stamper.Close();
+            _pdfReader.Close();
             _pdfWriter.Dispose();
 
-            return (base64, size);
+
+
+            return Convert.ToBase64String(pdfBytes);
         }
 
-        public IDictionary<string, PdfFormField> GetAcroFields()
+        public AcroFields GetAcroFields()
         {
-            var fields = PdfAcroForm.GetAcroForm(_pdfDocument, false)?.GetFormFields();
+            var fields = _pdfReader.AcroFields;
 
             if (!_writeMode)
                 Close();
