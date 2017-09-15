@@ -19,9 +19,7 @@ namespace PdfAutofill.Controllers
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
-                _service.InitDocument(url, false);
-
-                var fieldNames = _service.GetAcroFields()?.Fields?.Select(x => x.Key).ToList();
+                var fieldNames = _service.GetAcroFields(url)?.Fields?.Select(x => x.Key).ToList();
                 if (fieldNames?.Count <= 0)
                     return NoContent();
 
@@ -33,13 +31,11 @@ namespace PdfAutofill.Controllers
         }
 
         [HttpPost]
-        public string Post([FromBody]PdfViewModel model)
+        public byte[] Post([FromBody]PdfViewModel model)
         {
-            _service.InitDocument(model, true);
-
             var pdfData = _service.FillPdf(model);
 
-            Response.ContentType = "text/plain";
+            Response.ContentType = "application/octet-stream";
 
             return pdfData;
         }

@@ -10,34 +10,13 @@ namespace PdfAutofill.Service.Impl
 {
     public class PdfService : IPdfService
     {
-        private Document _pdfDocument;
-        private PdfReader _pdfReader;
-        private PdfWriter _pdfWriter;
         private MemoryStream _memoryBuffer;
-        private bool _writeMode;
 
         public void InitDocument(string url, bool writeMode)
         {
-            _writeMode = writeMode;
+            
 
-            byte[] bytes;
-
-            using (var client = new WebClient())
-            {
-                bytes = client.DownloadData(new Uri(url));
-            }
-
-            using (var memStream = new MemoryStream(bytes))
-            {
-                _pdfDocument = new Document();
-                _pdfReader = new PdfReader(memStream);
-
-                if (!writeMode)
-                    return;
-
-                _memoryBuffer = new MemoryStream();
-                _pdfWriter = PdfWriter.GetInstance(_pdfDocument, memStream);
-            }
+            _memoryBuffer = new MemoryStream();
         }
 
         public void InitDocument(PdfViewModel model, bool writeMode)
@@ -45,46 +24,35 @@ namespace PdfAutofill.Service.Impl
             InitDocument(model.Url, writeMode);
         }
 
-        public string FillPdf(PdfViewModel model)
+        public byte[] FillPdf(PdfViewModel model)
         {
-            var stamper = new PdfStamper(_pdfReader, _memoryBuffer);
-            var form = stamper.AcroFields;
 
-            foreach (var element in model.FieldsData)
+            var pdfReader = new PdfReader(model.Url);
+            using (var memStream = new MemoryStream())
             {
-                if (form.Fields.ContainsKey(element.Key))
+                using (var stamper = new PdfStamper(pdfReader, memStream))
                 {
-                    form.SetField(element.Key, element.Value);
+                    var form = stamper.AcroFields;
+
+                    foreach (var element in model.FieldsData)
+                    {
+                        if (form.Fields.ContainsKey(element.Key))
+                        {
+                            form.SetField(element.Key, element.Value);
+                        }
+                    }
                 }
+                pdfReader.Close();
+                return memStream.ToArray();
             }
-
-            _memoryBuffer.Seek(0, 0);
-
-            var pdfBytes = _memoryBuffer.ToArray();
-
-            stamper.Close();
-            _pdfReader.Close();
-            _pdfWriter.Dispose();
-
-
-
-            return Convert.ToBase64String(pdfBytes);
         }
 
-        public AcroFields GetAcroFields()
+        public AcroFields GetAcroFields(string url)
         {
-            var fields = _pdfReader.AcroFields;
-
-            if (!_writeMode)
-                Close();
+            var pdfReader = new PdfReader(url);
+            var fields = pdfReader.AcroFields;
 
             return fields;
-        }
-
-        private void Close()
-        {
-            _pdfDocument.Close();
-            _pdfReader.Close();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace PdfAutofill.Service
     {
         void InitDocument(string url, bool writeMode);
         void InitDocument(PdfViewModel model, bool writeMode);
-        string FillPdf(PdfViewModel model);
-        AcroFields GetAcroFields();
+        byte[] FillPdf(PdfViewModel model);
+        AcroFields GetAcroFields(string url);
     }
 }
