@@ -36,12 +36,7 @@ namespace PdfAutofill.Tests
         public void ReceivePdfWithForms_ReturnListOfFields()
         {
             var result = _sut.GetAcroFields(_pdf.Url);
-
-            foreach (var pair in result.Fields)
-            {
-                Console.WriteLine(pair.Key);
-            }
-
+            
             Assert.IsNotNull(result);
             Assert.AreEqual(23, result.Fields.Count);
             Assert.True(result.Fields.Count(x => x.Key == "Adress") == 1);
@@ -63,14 +58,7 @@ namespace PdfAutofill.Tests
             var pdf = _sut.FillPdf(_pdf);
             var reader = new PdfReader(pdf);
             var result = reader.AcroFields;
-
-
-            foreach (var pair in result.Fields)
-            {
-
-                Console.WriteLine($"{pair.Key} : {reader.AcroFields.GetField(pair.Key)}");
-            }
-
+            
             Assert.IsNotNull(result);
             Assert.AreEqual("storgatan 4",
                 reader.AcroFields.GetField(result.Fields.Keys.FirstOrDefault(x => x == "Adress")));

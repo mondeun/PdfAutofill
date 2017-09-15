@@ -33,7 +33,7 @@ namespace PdfAutofill.Controllers
         {
             var pdfData = _service.FillPdf(model);
 
-            Response.ContentType = "application/octet-stream";
+            Response.ContentType = "text/plain";
 
             return Convert.ToBase64String(pdfData);
         }

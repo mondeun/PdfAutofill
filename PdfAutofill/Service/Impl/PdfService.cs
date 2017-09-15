@@ -8,7 +8,6 @@ namespace PdfAutofill.Service.Impl
     {
         public byte[] FillPdf(PdfViewModel model)
         {
-
             var pdfReader = new PdfReader(model.Url);
             using (var memStream = new MemoryStream())
             {
