@@ -35,7 +35,6 @@ namespace PdfAutofill.Tests
         [Test]
         public void ReceivePdfWithForms_ReturnListOfFields()
         {
-            _sut.InitDocument(_pdf.Url, false);
             var result = _sut.GetAcroFields(_pdf.Url);
 
             foreach (var pair in result.Fields)
@@ -51,12 +50,9 @@ namespace PdfAutofill.Tests
         [Test]
         public void ReceivePdfWithoutForms_ReturnNoContent()
         {
-            _pdf.Url =
-                "https://www.jur.lu.se/WEB.nsf/(MenuItemByDocId)/ID872C0E240C0068BBC1257D2E00261EF5/$FILE/Lathund%20PDF.pdf";
-
-            _sut.InitDocument(_pdf.Url, false);
-
-            var result = _sut.GetAcroFields(_pdf.Url);
+            var result =
+                _sut.GetAcroFields(
+                    "https://www.jur.lu.se/WEB.nsf/(MenuItemByDocId)/ID872C0E240C0068BBC1257D2E00261EF5/$FILE/Lathund%20PDF.pdf");
 
             Assert.IsEmpty(result.Fields);
         }
@@ -64,8 +60,6 @@ namespace PdfAutofill.Tests
         [Test]
         public void WriteToAcroformForm_RetrieveFilledOutPdf()
         {
-            _sut.InitDocument(_pdf.Url, true);
-
             var pdf = _sut.FillPdf(_pdf);
             var reader = new PdfReader(pdf);
             var result = reader.AcroFields;

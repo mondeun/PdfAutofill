@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using iTextSharp.text;
+﻿using System.IO;
 using iTextSharp.text.pdf;
 using PdfAutofill.Model;
 
@@ -10,20 +6,6 @@ namespace PdfAutofill.Service.Impl
 {
     public class PdfService : IPdfService
     {
-        private MemoryStream _memoryBuffer;
-
-        public void InitDocument(string url, bool writeMode)
-        {
-            
-
-            _memoryBuffer = new MemoryStream();
-        }
-
-        public void InitDocument(PdfViewModel model, bool writeMode)
-        {
-            InitDocument(model.Url, writeMode);
-        }
-
         public byte[] FillPdf(PdfViewModel model)
         {
 

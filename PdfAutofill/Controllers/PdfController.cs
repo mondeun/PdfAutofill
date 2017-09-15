@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using PdfAutofill.Model;
 using PdfAutofill.Service;
 using PdfAutofill.Service.Impl;
@@ -31,13 +29,13 @@ namespace PdfAutofill.Controllers
         }
 
         [HttpPost]
-        public byte[] Post([FromBody]PdfViewModel model)
+        public string Post([FromBody]PdfViewModel model)
         {
             var pdfData = _service.FillPdf(model);
 
             Response.ContentType = "application/octet-stream";
 
-            return pdfData;
+            return Convert.ToBase64String(pdfData);
         }
     }
 }
