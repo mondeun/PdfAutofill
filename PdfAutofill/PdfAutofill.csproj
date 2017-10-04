@@ -16,7 +16,7 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="wwwroot\Min bostad.pdf">
+    <Content Update="wwwroot\pdfs\Min bostad.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

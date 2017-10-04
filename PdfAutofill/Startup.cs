@@ -29,6 +29,7 @@ namespace PdfAutofill
             }
 
             app.UseMvc();
+            app.UseStaticFiles();
         }
     }
 }
