@@ -29,7 +29,7 @@ namespace PdfAutofill.Controllers
         }
 
         [HttpPost("new")]
-        public IActionResult PostHtml(string html)
+        public IActionResult PostHtml([FromBody]string html)
         {
             if (string.IsNullOrWhiteSpace(html))
             {
