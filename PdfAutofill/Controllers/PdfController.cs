@@ -28,14 +28,33 @@ namespace PdfAutofill.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPost]
-        public string Post([FromBody]PdfViewModel model)
+        [HttpPost("new")]
+        public IActionResult PostHtml([FromBody] string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                ModelState.AddModelError("html", "Cannot generate pdf from nothing");
+                return BadRequest(ModelState);
+            }
+            var pdfData = _service.CreatepdfFromHtml(html);
+            if (pdfData.LongLength <= 0)
+            {
+                ModelState.AddModelError("pdf", "Could not generate a pdf correctly");
+                return BadRequest();
+            }
+
+            Response.ContentType = "text/plain";
+            return Ok(Convert.ToBase64String(pdfData));
+        }
+
+        [HttpPost("fill")]
+        public IActionResult PostExistingPdf([FromBody]PdfViewModel model)
         {
             var pdfData = _service.FillPdf(model);
 
             Response.ContentType = "text/plain";
 
-            return Convert.ToBase64String(pdfData);
+            return Ok(Convert.ToBase64String(pdfData));
         }
     }
 }

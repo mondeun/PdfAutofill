@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using iTextSharp.text;
 using iTextSharp.text.pdf;
 using PdfAutofill.Model;
 
@@ -6,6 +7,28 @@ namespace PdfAutofill.Service.Impl
 {
     public class PdfService : IPdfService
     {
+        public byte[] CreatepdfFromHtml(string html)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var doc = new Document())
+                {
+                    using (var writer = PdfWriter.GetInstance(doc, ms))
+                    {
+                        doc.Open();
+
+                        using (var srHtml = new StringReader(html))
+                        {
+                            iTextSharp.tool.xml.XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, srHtml);
+                        }
+                        doc.Close();
+                    }
+                }
+
+                return ms.ToArray();
+            }
+        }
+
         public byte[] FillPdf(PdfViewModel model)
         {
             var pdfReader = new PdfReader(model.Url);
