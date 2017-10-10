@@ -20,7 +20,7 @@ namespace PdfAutofill.Controllers
                 var fieldNames = _service.GetAcroFields(url)?.Fields?.Select(x => x.Key).ToList();
                 if (fieldNames?.Count <= 0)
                     return NoContent();
-
+                
                 return Ok(fieldNames);
             }
 
@@ -40,7 +40,7 @@ namespace PdfAutofill.Controllers
             if (pdfData.LongLength <= 0)
             {
                 ModelState.AddModelError("pdf", "Could not generate a pdf correctly");
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             Response.ContentType = "text/plain";
