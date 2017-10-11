@@ -1,15 +1,10 @@
 language: csharp
-mono: none
-dotnet: 2.0.0
-dist: trusty
+solution: PdfAutofill.sln
+
 branches:
   only:
     - master
     - develop
-script:
- - dotnet restore
- - dotnet build
- - dotnet test PdfAutofill.Tests
 notifications:
   email:
     on_success: never

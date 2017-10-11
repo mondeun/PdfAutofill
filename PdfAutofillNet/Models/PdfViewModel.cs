@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PdfAutofill.Model
+namespace PdfAutofillNet.Models
 {
     public class PdfViewModel
     {

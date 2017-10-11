@@ -1,7 +1,7 @@
 ﻿using iTextSharp.text.pdf;
-using PdfAutofill.Model;
+using PdfAutofillNet.Models;
 
-namespace PdfAutofill.Service
+namespace PdfAutofillNet.Service
 {
     public interface IPdfService
     {

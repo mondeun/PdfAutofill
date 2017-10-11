@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using iTextSharp.text.pdf;
 using NUnit.Framework;
-using PdfAutofill.Model;
-using PdfAutofill.Service;
-using PdfAutofill.Service.Impl;
+using PdfAutofillNet.Models;
+using PdfAutofillNet.Service;
+using PdfAutofillNet.Service.Impl;
 
-namespace PdfAutofill.Tests
+namespace PdfAutofillNet.Tests
 {
     [TestFixture]
     public class PdfServiceTests
