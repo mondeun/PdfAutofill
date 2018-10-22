@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using PdfAutofillNet.Service;
 using PdfAutofillNet.Service.Impl;
@@ -43,7 +42,7 @@ namespace PdfAutofillNet.Controllers
                 ModelState.AddModelError("html", "Cannot generate pdf from nothing");
                 return BadRequest(ModelState);
             }
-            var pdfData = _service.CreatepdfFromHtml(html);
+            var pdfData = _service.CreatePdfFromHtml(html);
             if (pdfData.LongLength <= 0)
             {
                 ModelState.AddModelError("pdf", "Could not generate a pdf correctly");

@@ -10,7 +10,7 @@ namespace PdfAutofillNet.Service.Impl
 {
     public class PdfService : IPdfService
     {
-        public byte[] CreatepdfFromHtml(string html)
+        public byte[] CreatePdfFromHtml(string html)
         {
             using (var ms = new MemoryStream())
             {
